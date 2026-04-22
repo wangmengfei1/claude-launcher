@@ -11,7 +11,7 @@ class Config:
 
     DEFAULT_CONFIG = {
         "last_folder": "",
-        "last_mode": "-c"
+        "last_mode": ""
     }
 
     def __init__(self, config_path="config.json"):
@@ -62,7 +62,10 @@ class ClaudeLauncher:
     @staticmethod
     def build_command(mode):
         """构建 Claude 命令字符串"""
-        return f'claude {mode} --dangerously-skip-permissions'
+        if mode:
+            return f'claude {mode} --dangerously-skip-permissions'
+        else:
+            return 'claude --dangerously-skip-permissions'
 
     @staticmethod
     def launch(folder, mode):
@@ -123,7 +126,7 @@ class ClaudeLauncher:
 class LauncherUI:
     """Claude 启动器主界面"""
 
-    WINDOW_WIDTH = 500
+    WINDOW_WIDTH = 550
     WINDOW_HEIGHT = 450
 
     def __init__(self, config: Config):
@@ -241,6 +244,16 @@ class LauncherUI:
         radio_frame = ttk.Frame(mode_frame)
         radio_frame.pack(fill=tk.X)
 
+        # 新增对话（默认）
+        rb_new = ttk.Radiobutton(
+            radio_frame,
+            text="新增对话",
+            variable=self.mode_var,
+            value="",
+            command=self.on_mode_change
+        )
+        rb_new.pack(side=tk.LEFT, padx=(0, 20))
+
         # 当前对话
         rb_current = ttk.Radiobutton(
             radio_frame,
@@ -249,7 +262,7 @@ class LauncherUI:
             value="-c",
             command=self.on_mode_change
         )
-        rb_current.pack(side=tk.LEFT, padx=(0, 30))
+        rb_current.pack(side=tk.LEFT, padx=(0, 20))
 
         # 历史对话
         rb_history = ttk.Radiobutton(
@@ -319,7 +332,10 @@ class LauncherUI:
     def update_command_preview(self):
         """更新命令预览"""
         mode = self.mode_var.get()
-        command = f'claude {mode} --dangerously-skip-permissions'
+        if mode:
+            command = f'claude {mode} --dangerously-skip-permissions'
+        else:
+            command = 'claude --dangerously-skip-permissions'
 
         self.command_preview.config(state=tk.NORMAL)
         self.command_preview.delete(1.0, tk.END)
