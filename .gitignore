@@ -4,13 +4,16 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
 dist/
 *.egg-info/
 *.egg
 
 # PyInstaller
 *.spec
+
+# Build 目录（但保留最终 EXE）
+build/*
+!build/ClaudeLauncher.exe
 
 # IDE
 .idea/
